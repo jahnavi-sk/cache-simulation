@@ -41,7 +41,12 @@ class Cache:
 
         print(result)
 
-        print("Dictionary is now: \n", my_dictionary)
+        print("Memory Table is now: \n")
+
+        print("Index    |   Tag")
+        print("-------------------")
+        for index, tag in my_dictionary.items():
+            print(f"{index:<8} |   {tag}")
         return my_dictionary, result
 
 
@@ -64,8 +69,6 @@ if __name__ == "__main__":
         if result == "Hit":
             hits += 1
         total_accesses += 1
-        print("total acceses: ", total_accesses)
-        print("hit: ",hits)
 
     hit_ratio = hits / total_accesses if total_accesses > 0 else 0
     print(f"Hit Ratio: {hit_ratio}")
