@@ -1,35 +1,71 @@
+import math
+
+
 class Cache:
-    def __init__(self, cache_size, block_size, main_memory_size):
-        self.cache_size = cache_size
-        self.block_size = block_size
-        self.num_blocks = cache_size // block_size
-        self.cache = [None] * self.num_blocks
-        self.tag = [None] * self.num_blocks
-        self.dirty = [False] * self.num_blocks
-        self.main_memory_size = main_memory_size
+    def calculate_cache_bits(cache_size, main_memory_size, block_size):
+        num_blocks = cache_size // block_size
+        index_bits = int(math.log2(num_blocks))
+        instruction_length = int(math.log2(main_memory_size))
+        offset_bits = math.log2(block_size)
+        tag_bits = instruction_length - offset_bits - index_bits
+        return index_bits, tag_bits, offset_bits, num_blocks
 
-    def get_index(self, address):
-        return (address // self.block_size) % self.num_blocks
+    def cache_access(address, cache_size, main_memory_size, block_size, my_dictionary):
+        integer = int(address, 16)
+        index_bits, tag_bits, offset_bits, num_blocks = Cache.calculate_cache_bits(cache_size, main_memory_size, block_size)
+        total_bits = index_bits + tag_bits + offset_bits
+        total_bits = int(total_bits)
+        binary_string = format(integer, f'0{total_bits}b')
 
-    def is_hit(self, address):
-        index = self.get_index(address)
-        return self.cache[index] is not None and self.tag[index] == address // self.block_size
+        tag_bits = int(tag_bits)
+        index_bits = int(index_bits)
+        tag = binary_string[:tag_bits]
+        index = binary_string[tag_bits:tag_bits + index_bits]
+        offset = binary_string[tag_bits + index_bits:]
 
-    def access(self, address):
-        if self.is_hit(address):
-            print("Hit")
+        index = int(index, 2)
+
+        
+        if my_dictionary[index] == -1:
+            result="Miss"
+            # print("Miss")
         else:
-            print("Miss")
-            index = self.get_index(address)
-            self.cache[index] = address
-            self.tag[index] = address // self.block_size
-            self.dirty[index] = False
+            if my_dictionary[index] == tag:
+                result="Hit"
+
+                # print("Hit")
+            else:
+                result="Miss"
+                # print("Miss")
+        my_dictionary[index] = tag 
+
+        print(result)
+
+        print("Dictionary is now: \n", my_dictionary)
+        return my_dictionary, result
+
+
 
 if __name__ == "__main__":
-    cache = Cache(cache_size=32, block_size=16, main_memory_size=65536) # Hardcoded values
-    print("Enter memory address(press q to exit)")
+    cache_size = int(input("Enter cache size: "))
+    main_memory_size = int(input("Enter main memory size: "))
+    block_size = int(input("Enter block size: "))
+
+    my_dictionary = dict.fromkeys(range(cache_size // block_size), -1)
+    hits = 0
+    total_accesses = 0
+
     while True:
-        address = int(input(""))
-        if address == -1:
+        address = input("Enter memory address (press -1 to exit): ")
+        if address == "-1":
             break
-        cache.access(address)
+        # cache_access(address, cache_size, main_memory_size, block_size, my_dictionary)
+        my_dictionary, result = Cache.cache_access(address, cache_size, main_memory_size, block_size, my_dictionary)
+        if result == "Hit":
+            hits += 1
+        total_accesses += 1
+        print("total acceses: ", total_accesses)
+        print("hit: ",hits)
+
+    hit_ratio = hits / total_accesses if total_accesses > 0 else 0
+    print(f"Hit Ratio: {hit_ratio}")
