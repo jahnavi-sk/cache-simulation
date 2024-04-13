@@ -20,9 +20,11 @@ class Cache:
         tag_bits = int(tag_bits)
         index_bits = int(index_bits)
         tag = binary_string[:tag_bits]
+        print("Tag has ",tag_bits,"bits and is: ",tag)
         index = binary_string[tag_bits:tag_bits + index_bits]
+        print("Index has ",index_bits,"bits and is: ",index)
         offset = binary_string[tag_bits + index_bits:]
-
+        print("Offset has ",offset_bits,"bits and is: ",offset)
         index = int(index, 2)
 
         
@@ -47,6 +49,7 @@ class Cache:
         print("-------------------")
         for index, tag in my_dictionary.items():
             print(f"{index:<8} |   {tag}")
+        print(index)
         return my_dictionary, result
 
 
