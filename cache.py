@@ -6,7 +6,7 @@ class Cache:
         num_blocks = cache_size // block_size
         index_bits = int(math.log2(num_blocks))
         instruction_length = int(math.log2(main_memory_size))
-        offset_bits = math.log2(block_size)
+        offset_bits = int(math.log2(block_size))
         tag_bits = instruction_length - offset_bits - index_bits
         return index_bits, tag_bits, offset_bits, num_blocks
 
@@ -49,10 +49,10 @@ class Cache:
         print("-------------------")
         for index, tag in my_dictionary.items():
             print(f"{index:<8} |   {tag}")
-        print(index)
+        # print(index)
         return my_dictionary, result
 
-
+3,6,23,42,3,4,23,57
 
 if __name__ == "__main__":
     cache_size = int(input("Enter cache size: "))
@@ -67,7 +67,6 @@ if __name__ == "__main__":
         address = input("Enter memory address (press -1 to exit): ")
         if address == "-1":
             break
-        # cache_access(address, cache_size, main_memory_size, block_size, my_dictionary)
         my_dictionary, result = Cache.cache_access(address, cache_size, main_memory_size, block_size, my_dictionary)
         if result == "Hit":
             hits += 1
