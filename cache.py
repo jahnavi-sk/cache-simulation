@@ -52,7 +52,6 @@ class Cache:
         # print(index)
         return my_dictionary, result
 
-3,6,23,42,3,4,23,57
 
 if __name__ == "__main__":
     cache_size = int(input("Enter cache size: "))
@@ -74,3 +73,5 @@ if __name__ == "__main__":
 
     hit_ratio = hits / total_accesses if total_accesses > 0 else 0
     print(f"Hit Ratio: {hit_ratio}")
+    print(f"Miss Ratio: {miss_ratio}")
+
